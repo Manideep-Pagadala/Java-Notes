@@ -1,0 +1,196 @@
+========================
+Correspondence Module
+========================
+
+=> It is used to generate notices to the citizens regarding Eligibility Details
+
+=> When eligibiliry determined notice trigger will be inserted for the citizen with "Pending" status in "co_notices" table.
+
+=> When we print notice, then pdf will be generated with citizen eligibility details and it will be sent to citizen in email as an attachment.
+
+Note: Store notice in s3 bucket (notice url will be stored in db table)
+
+Note: Once notice is printed it will be moved to 'History' status.
+
+=> In Correspondence UI, we have screens to display Pending & History notices.
+
+
+=======================================
+Spring Boot with AWS S3 Integration
+======================================
+
+1) Add AWS SDK dependency in pom.xml file
+		
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk</artifactId>
+			<version>1.12.318</version>
+		</dependency>
+
+2) Create IAM user with S3FullAccess policy
+
+3) Generte Access Keys For IAM user account (Access & Secret Access Key)
+
+4) Create S3 Buket
+
+5) Configure below details in springboot application properties file
+
+					accessKey=
+					secret=
+					bucketName=
+					region=
+
+6) Create S3Config class and build AmazonS3 bean object
+
+7) Create S3Utils class and inject AmazonS3 object and use AmazonS3 method to upload object into s3 bucket.
+
+			PutObjectResult result = s3.putObject(bucketName, fileName, file);
+			String objUrl = result.getContentMd5();
+
+=================
+Batch Processing
+=================
+
+=> Bulk Operation
+
+=> We need to identify for which citizens eligibility is getting completed for the plan for those citizens we need to send notices regarding plan renewal/termination.
+
+		Ex : 15 days renewal reminder notice
+
+On 27-Apr, 1000 citizens eligibility getting completed..
+
+On 28-Apr, 10k citizens eligibility getting completed..	
+
+On 29-Apr, 30k citizens eligiblity getting completed..
+
+====================================
+Renewal Reminder Notice Generation
+=====================================
+
+Step-1) Identify citizens whose eligiblity getting completed in 15 days
+
+Step-2) Prepare Notice for those citizens
+
+Step-3) Store Notice in s3
+
+Step-4) Send Notice to citizen in email as attachment.
+
+
+To send one notice it is taking 1 sec of time.....
+
+1 min ==> 60 notices
+
+1 hour ==> 3,600 notices
+
+2 hours ==> 7,200 notices
+
+28 hours => 1 lakh notices..... 
+
+(client expectation is 1 lakh notices to send in 1 hour)
+
+Note: To resolve this performance issue we can implement Multi Threading in the project.
+
+=========== Create 10 Threads to generate notices ============
+
+1 sec ==> 10 threads ==> 10 notices
+
+1 min => 60 * 10 => 600 notices
+
+1 hour => 60 * 600 => 36,000 notices
+
+=========== Create 20 Threads to generate notices ===========
+
+1 sec ==> 20 threads ==> 20 notices
+
+1 min => 60 * 20 => 1200 notices
+
+1 hour => 60 * 1200 => 72,000 notices
+
+=========== Create 30 Threads to generate notices ===========
+
+1 sec ==> 30 threads ==> 30 notices
+
+1 min => 60 * 30 => 1800 notices
+
+1 hour => 60 * 1800 => 1,08,000 notices
+
+==================================
+How to implement Multi Threading
+==================================
+
+=> Multi Threading is used for parallel processing
+
+=> We have 3 ways to create thread in java
+
+		1) By Extending Thread class
+
+		2) By Implementing Runnable interface
+
+		3) By Implementing Callable interface
+
+=> If we extend properties from Thread class then we can't extend props from any other class in future.
+
+		class Demo extends Thread {
+
+			public void run(){
+				// thread logic
+			}
+		}
+
+=> We can implement Runnable interface and we can override run () method
+
+		class Demo implements Runnable {
+
+			public void run (){
+				 // thread logic
+			}
+		}
+
+Note: run ( ) method return type is void.
+
+
+=> We can implement Callable interface and we can override call ( ) method
+
+		class Demo implement Callable{
+
+			public Object call (){
+				// thread logic
+				return obj;
+			}
+		}
+
+Note: Callable interface introduced in java 1.5v
+
+=======================
+Executors Framework
+=======================
+
+=> It is used to deal with Multi Threading
+
+=> We can create multiple threads at a time (with single line of code)
+
+
+public class Test {
+
+	public static void main(String[] args) {
+
+		Test t = new Test();
+
+		ExecutorService threadPool = Executors.newFixedThreadPool(20);
+
+		for (int i = 1; i <= 100; i++) {
+			threadPool.submit(new Callable<Object>() {
+				@Override
+				public Object call() throws Exception {
+					t.sendNotice();
+					return null;
+				}
+			});
+		}
+	}
+
+	public void sendNotice() {
+		System.out.println("generating notice....");
+		// logic to generate notice
+	}
+}

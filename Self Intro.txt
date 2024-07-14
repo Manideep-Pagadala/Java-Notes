@@ -1,0 +1,30 @@
+Hi..., 
+
+my name is Manideep, Iam from Hyderabad.I have done my bachelor degree from kiet engineering college in 2023.
+
+I have overall 1 year experience in Softtech infinum technologies as software engineer.
+From  the last one year i got opportunity to work with java,springboot, rest apis, microservices,  oracle  AWS and several devops tools like Git, Maven, Sonar, Jenkins, Docker etc..
+
+Coming to my roles and responsibilities
+Gathering requirements from functional team, analyzing the requirements and implementng the code.
+Currently iam working for inusrance application named as HIS application
+
+Client : Rohde Island State Gov, USA
+=> The main objective of HIS is to provide health and insurance plans for RI state citizens who are needy.
+Tech Stack : Java, Spring Boot, Microservices, Angular, Oracle DB, AWS Cloud.
+=> Using HIS, RI state providing below plans for citizens
+
+1) SNAP (foodstamp)
+2) CCAP (child care)
+3) Medicaid (health)
+4) Medicare (health -> senior citizens)
+5) QHP (Qualified Health Plan)
+6) RIW (Rhode Island Works)
+
+Note: Every plan will have some conditions to determine eligibility. 
+
+=> When citizen apply for the plan HIS will determine citizen eligibility based on plan conditions.
+
+=> If citizen data matching with plan conditions then citizen will be approved for the plan. Approved citizens will get benefit from Govt on monthly basis.
+
+=> If Citizen Data not matching with plan conditions then citizen will be denied for the plan.
